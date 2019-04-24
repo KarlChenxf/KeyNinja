@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - MySiteApplication",
+            "request": "launch",
+            "mainClass": "com.xfchen.mySite.MySiteApplication",
+            "projectName": "mySite"
+        }
+    ]
+}

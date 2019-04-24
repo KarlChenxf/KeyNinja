@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="commonPart/header :: common-header"></head>
+<body>
+	<div th:replace="commonPart/header :: navbar"></div>
+	<div class="container">
+		<div class="col-xs-4">
+			<h1>Customers</h1>
+			<!-- Button trigger modal -->
+
+			<button class="btn btn-primary" onclick="getCustomers();" type="button">Show All Customers</button>
+			<hr>
+			<div id="customers-show">
+				<table id="itemListTable"
+					class="table table-bordered table-hover table-striped">
+					<thead>
+						<tr>
+							<th>id</th>
+							<th>fisrtname</th>
+							<th>lastname</th>
+							<th>email</th>
+							<th>edit</th>
+							<th>delete</th>
+						</tr>
+					</thead>
+					<tbody id="customer-list">
+					</tbody>
+
+				</table>
+				<form id="add-customer-form">
+
+					<div class="form-group">
+						<label for="firstname">First Name</label> <input name="firstName"
+							type="text" class="form-control" id="firstname">
+					</div>
+					<div class="form-group">
+						<label for="lastname">Last Name</label> <input name="lastName"
+							type="text" class="form-control" id="lastname">
+					</div>
+					<div class="form-group">
+						<label for="email">Email address</label> <input name="email"
+							type="email" class="form-control" id="email"
+							aria-describedby="emailHelp" placeholder="Enter email"> <small
+							id="emailHelp" class="form-text text-muted">We'll never
+							share your email with anyone else.</small>
+					</div>
+				</form>
+				<button id="add-customer" onclick="addCustomer();" type="button" class="btn btn-primary">Add new Customer</button>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Edit Customer</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+				<form id="edit-form">
+					<div class="form-group">
+						<label for="firstname">First Name</label> <input name="firstName"
+							type="text" class="form-control" id="modal-firstname">
+					</div>
+					<div class="form-group">
+						<label for="lastname">Last Name</label> <input name="lastName"
+							type="text" class="form-control" id="modal-lastname">
+					</div>
+					<div class="form-group">
+						<label for="email">Email address</label> <input name="email"
+							type="email" class="form-control" id="modal-email"
+							aria-describedby="emailHelp" placeholder="Enter email"> <small
+							id="emailHelp" class="form-text text-muted">We'll never
+							share your email with anyone else.</small>
+					</div>
+				</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Close</button>
+					<button id="update-button" type="button" data-dismiss="modal" onclick="updateCustomer(this)" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		var target = 'http://xfchen.tech:9090/list/customer';
+		
+		function getCustomer(obj) {
+			var id = obj.getAttribute("data-id");
+			$.ajax({
+				url : target + "/" + id,
+				type : 'Get',
+				data : '',
+				dataType : 'json',
+				crossDomain : true,
+				success : function(data) {
+					$("#modal-firstname").val(data.firstName);
+					$("#modal-lastname").val(data.lastName);
+					$("#modal-email").val(data.email);
+					$("#update-button").attr("data-id",data.id);
+					console.log(data);
+				}
+			});
+		}
+
+		function addCustomer() {
+			var customerData = {};
+			$("#add-customer-form").serializeArray().map(function(x) {
+				customerData[x.name] = x.value;
+			});
+			console.log(customerData);
+			$.ajax({
+				url : target,
+				type : 'Post',
+				data : customerData,
+				dataType : 'json',
+				crossDomain : true,
+				success : function(data) {
+					showCustomer(data);
+				}
+			});
+		}
+		
+		function updateCustomer(obj){
+			var id = obj.getAttribute("data-id");
+			var customerData = {};
+			$("#edit-form").serializeArray().map(function(x) {
+				customerData[x.name] = x.value;
+			});
+			console.log(customerData);
+			$.ajax({
+				url : target+'/'+id,
+				type : 'Put',
+				data : customerData,
+				dataType : 'json',
+				crossDomain : true,
+				success : function(data) {
+					showCustomer(data);
+				}
+			});
+		}
+
+		function getCustomers() {
+			$.ajax({
+				url : target,
+				type : 'Get',
+				data : '',
+				dataType : 'json',
+				crossDomain : true,
+				success : function(data) {
+					showCustomer(data);
+				}
+			});
+		}
+
+		function showCustomer(data) {
+			var line = "";
+			for (var i = 0; i < data.length; i++) {
+				console.log(data[i])
+				line += "<tr><td>" + data[i].id + "</td><td>"
+						+ data[i].firstName + "</td><td>" + data[i].lastName
+						+ "</td><td>" + data[i].email + "</td>";
+				line += "<td>	<button type='button' onclick='getCustomer(this)' class='btn btn-primary edit-button' data-toggle='modal' data-target='#editModal' data-id='"
+						+ data[i].id + "'>edit</button>";
+				line += "<td><button type='button' onclick='deleteCustomer(this)' class='delete-button btn btn-danger' data-id='"
+						+ data[i].id + "'>delete</button></td>";
+				line += "<tr>";
+			}
+			$("#customer-list").html(line);
+		}
+		function deleteCustomer(obj) {
+			var id = obj.getAttribute("data-id");
+			$.ajax({
+				url : target + "/" + id,
+				type : 'Delete',
+				data : '',
+				dataType : 'json',
+				crossDomain : true,
+				success : function(data) {
+					showCustomer(data);
+				}
+			});
+		}
+	</script>
+	<div th:replace="commonPart/header :: footer-scripts"></div>
+</body>
+</html>

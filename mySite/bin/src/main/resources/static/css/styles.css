@@ -1,0 +1,26 @@
+.colorDebug{
+	background-color:red;
+}
+.carousel{
+	padding: 0;
+	margin:0;
+}
+.container{
+	width: 90%;
+}
+#myAccount-box{
+	width:60%;
+	margin-top: 100px;
+}
+hr{
+	border: none;
+	height: 1px;
+	background-color: gray;
+}
+.login-box{
+	background-color: red;
+}
+.form-box{
+	padding: 20px;
+	background-color: #ededed;
+}

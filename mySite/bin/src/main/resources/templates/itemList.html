@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="commonPart/header :: common-header"></head>
+<body>
+	<div th:replace="commonPart/header :: navbar"></div>
+	<div class="container">
+		<div class="col-xs-4"><h1>Category</h1>
+		<div class="row">
+			
+			</div>
+			<div class="col-xs-8">
+				<div th:if="${emptyList}" class="alert alert-danger">No results</div>
+				<table barder="0" id="itemTable" class="table">
+					<thead><tr><th></th></tr></thead>
+					<tbody>
+						<tr class="item-instance" data-th-each="item : ${itemList}">
+							<div class="row">
+								<div class="col-xs-3">
+									<img class="img-responsive item-img" th:src="@{#{adminPath} + '/img/item/' + ${item.getId()} + '.png'}" alt="...">
+								</div>
+								<div class="col-xs-9">
+									<h4 th:text="${item.getName()}"></h4>
+									<span th:text="${item.getOurPrice()}"></span>
+									<h4 th:text="${item.getDescription()}"></h4>
+								</div>
+							</div>
+							<hr>
+						</tr>
+					</tbody>
+
+				</table>
+			</div>
+
+		</div>
+
+	</div>
+	<!--footer part -->
+
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<div th:replace="commonPart/header :: footer-scripts"></div>
+
+
+</body>
+</html>
