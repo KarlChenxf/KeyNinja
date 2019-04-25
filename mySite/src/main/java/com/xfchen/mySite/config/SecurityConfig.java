@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			"/forgetPassword",
 			"/myProfile",
 			"/login",
+			"/myAccount"
 			
 	};
 	
